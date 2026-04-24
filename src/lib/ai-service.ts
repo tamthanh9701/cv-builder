@@ -1,9 +1,24 @@
 import { createServerSupabaseClient } from './supabase-server';
-import { AIProviderType, AIProviderConfig, AppSettings, createDefaultSettings } from '@/types/ai';
+import { createDefaultSettings } from '@/types/ai';
 
 interface AIResponse {
   content: string;
   error?: string;
+}
+
+interface AIProviderConfig {
+  type: string;
+  api_key: string;
+  base_url: string;
+  model: string;
+  enabled: boolean;
+  vertex_project?: string;
+  vertex_location?: string;
+}
+
+interface AppSettings {
+  active_provider: string;
+  providers: Record<string, AIProviderConfig>;
 }
 
 async function callOpenAI(provider: AIProviderConfig, messages: { role: string; content: string }[]): Promise<string> {
@@ -84,7 +99,8 @@ export async function getAppSettings(): Promise<AppSettings> {
     .select('settings')
     .single();
 
-  return data?.settings ? { ...createDefaultSettings(), ...data.settings } : createDefaultSettings();
+  const defaults = createDefaultSettings();
+  return data?.settings ? { ...defaults, ...data.settings } : defaults;
 }
 
 export async function callAI(messages: { role: string; content: string }[]): Promise<AIResponse> {
@@ -111,16 +127,7 @@ export async function callAI(messages: { role: string; content: string }[]): Pro
         content = await callGemini(provider, messages);
         break;
       case 'vertexai':
-        const { VertexAI } = await import('@google-cloud/vertexai');
-        const vertexAI = new VertexAI({
-          project: provider.vertex_project!,
-          location: provider.vertex_location!,
-        });
-        const model = vertexAI.getGenerativeModel({ model: provider.model });
-        const lastMessage = messages[messages.length - 1]?.content || '';
-        const result = await model.generateContent(lastMessage);
-        content = result.response.text();
-        break;
+        return { content: '', error: 'VertexAI requires @google-cloud/vertexai package' };
       default:
         return { content: '', error: 'Unknown provider' };
     }
@@ -135,7 +142,7 @@ export async function analyzeCV(
   cvContent: string,
   jobDescription: string,
   targetJobUrl?: string
-): Promise<{ suggestions: string; improvedCV: any }> {
+): Promise<{ suggestions: string; improvedCV: unknown }> {
   const systemPrompt = `Bạn là chuyên gia tư vấn CV hàng đầu. Bạn sẽ phân tích CV của người dùng và so sánh với yêu cầu của công việc để đưa ra đề xuất cải thiện.
 
 Hãy phân tích và trả về JSON với format:
@@ -214,7 +221,7 @@ Hãy tạo HTML template cho CV này.`;
       return parsed.htmlTemplate || result.content;
     }
     return result.content;
-  } catch (error) {
+  } catch {
     return result.content;
   }
 }
