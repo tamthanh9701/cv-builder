@@ -19,10 +19,10 @@ export interface AppSettings {
 export const DEFAULT_PROVIDERS: Record<AIProviderType, Omit<AIProviderConfig, 'api_key'>> = {
   openai: { type: 'openai', base_url: 'https://api.openai.com/v1', model: 'gpt-4o', enabled: false },
   anthropic: { type: 'anthropic', base_url: 'https://api.anthropic.com', model: 'claude-sonnet-4-20250514', enabled: false },
-  openrouter: { type: 'openrouter', base_url: 'https://openrouter.ai/api/v1', model: 'openai/gpt-4o', enabled: false },
+  openrouter: { type: 'openrouter', base_url: 'https://openrouter.ai/api/v1', model: 'google/gemini-3.1-pro', enabled: false },
   litellm: { type: 'litellm', base_url: 'http://localhost:4000', model: 'gpt-4o', enabled: false },
-  google: { type: 'google', base_url: 'https://generativelanguage.googleapis.com', model: 'gemini-2.0-flash', enabled: false },
-  vertexai: { type: 'vertexai', base_url: '', model: 'gemini-2.0-flash', enabled: false },
+  google: { type: 'google', base_url: 'https://generativelanguage.googleapis.com', model: 'gemini-3.1-pro', enabled: false },
+  vertexai: { type: 'vertexai', base_url: '', model: 'gemini-3.1-pro', enabled: false },
 };
 
 export function createDefaultSettings(): AppSettings {

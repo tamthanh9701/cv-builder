@@ -1,3 +1,5 @@
+import type { CVData } from './cv';
+
 export * from './ai';
 export * from './cv';
 
