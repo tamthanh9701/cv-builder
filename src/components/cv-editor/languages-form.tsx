@@ -95,7 +95,7 @@ export function LanguagesForm({ entries, onChange }: LanguagesFormProps) {
 
       {entries.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-4">
-          Chưa có thông tin ngôn ngữ. Nhấn "Thêm ngôn ngữ" để bắt đầu.
+          Chưa có thông tin ngôn ngữ. Nhấn &quot;Thêm ngôn ngữ&quot; để bắt đầu.
         </p>
       )}
     </div>

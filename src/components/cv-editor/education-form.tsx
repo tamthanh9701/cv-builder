@@ -129,7 +129,7 @@ export function EducationForm({ entries, onChange }: EducationFormProps) {
 
       {entries.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-4">
-          Chưa có thông tin học vấn. Nhấn "Thêm trường" để bắt đầu.
+          Chưa có thông tin học vấn. Nhấn &quot;Thêm trường&quot; để bắt đầu.
         </p>
       )}
     </div>

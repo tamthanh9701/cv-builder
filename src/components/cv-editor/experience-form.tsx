@@ -113,7 +113,7 @@ export function ExperienceForm({ entries, onChange }: ExperienceFormProps) {
 
       {entries.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-4">
-          Chưa có kinh nghiệm làm việc. Nhấn "Thêm công ty" để bắt đầu.
+          Chưa có kinh nghiệm làm việc. Nhấn &quot;Thêm công ty&quot; để bắt đầu.
         </p>
       )}
     </div>
