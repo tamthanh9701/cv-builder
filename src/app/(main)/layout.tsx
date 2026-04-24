@@ -2,15 +2,16 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, FileText, Settings, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, FileText, LogOut, Menu, X } from "lucide-react";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, signOut } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   if (loading) {
@@ -22,7 +23,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   }
 
   if (!user) {
-    typeof window !== "undefined" && window.location.href = "/login";
+    router.push("/login");
     return null;
   }
 

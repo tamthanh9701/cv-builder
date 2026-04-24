@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase-server';
 
 export async function POST(request: Request) {
   try {
@@ -57,16 +56,7 @@ export async function POST(request: Request) {
       );
       success = response.ok;
     } else if (type === 'vertexai') {
-      const { VertexAI } = await import('@google-cloud/vertexai');
-      const vertexAI = new VertexAI({ project: provider.vertex_project, location: provider.vertex_location });
-      const generativeModel = vertexAI.getGenerativeModel({ model: provider.model });
-
-      try {
-        const result = await generativeModel.generateContent(userPrompt);
-        success = !!result?.response;
-      } catch (e) {
-        success = false;
-      }
+      success = false;
     }
 
     return NextResponse.json({ success });

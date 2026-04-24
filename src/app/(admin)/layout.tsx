@@ -2,17 +2,18 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth-provider";
 import { createClient } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, FileText, Settings, LogOut, Menu, X, Cpu, Shield } from "lucide-react";
+import { LayoutDashboard, FileText, LogOut, Menu, X, Cpu, Shield } from "lucide-react";
 import { useEffect } from "react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, signOut } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [isAdmin, setIsAdmin] = React.useState(false);
   const supabase = createClient();
@@ -39,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   if (!user) {
-    typeof window !== "undefined" && (window.location.href = '/login');
+    router.push("/login");
     return null;
   }
 
