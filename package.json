@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.2.15",
+"next": "14.2.29",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "@supabase/supabase-js": "^2.45.0",
@@ -20,8 +20,7 @@
     "zod": "^3.23.8",
     "react-dropzone": "^14.2.3",
     "react-quill": "^2.0.0",
-    "@radix-ui/react-checkbox": "^1.1.0",
-    "html2pdf.js": "^0.10.2"
+    "@radix-ui/react-checkbox": "^1.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.12",
