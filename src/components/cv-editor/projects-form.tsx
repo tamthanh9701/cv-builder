@@ -1,13 +1,18 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import { ProjectEntry } from "@/types/cv";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2 } from "lucide-react";
 import { generateId } from "@/types";
+
+const ReactQuill = dynamic(
+  () => import("react-quill").then((mod) => mod.default),
+  { ssr: false, loading: () => <div className="h-40 border rounded-md animate-pulse bg-muted" /> }
+);
 
 interface ProjectsFormProps {
   entries: ProjectEntry[];
@@ -71,11 +76,19 @@ export function ProjectsForm({ entries, onChange }: ProjectsFormProps) {
             </div>
             <div className="space-y-2">
               <Label>Mô tả</Label>
-              <Textarea
+              <ReactQuill
                 value={entry.description}
-                onChange={(e) => updateEntry(entry.id, "description", e.target.value)}
-                placeholder="- Xây dựng website thương mại điện tử&#10;- Sử dụng React + Node.js&#10;- 10,000+ người dùng"
-                className="min-h-[100px]"
+                onChange={(content) => updateEntry(entry.id, "description", content)}
+                theme="snow"
+                modules={{
+                  toolbar: [
+                    [{ 'header': [1, 2, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
+                  ],
+                }}
+                className="bg-white"
               />
             </div>
             <div className="space-y-2">

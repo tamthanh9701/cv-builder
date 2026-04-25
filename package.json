@@ -18,7 +18,10 @@
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.4.0",
     "zod": "^3.23.8",
-    "react-dropzone": "^14.2.3"
+    "react-dropzone": "^14.2.3",
+    "react-quill": "^2.0.0",
+    "@radix-ui/react-checkbox": "^1.1.0",
+    "html2pdf.js": "^0.10.2"
   },
   "devDependencies": {
     "@types/node": "^20.14.12",

@@ -1,13 +1,19 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import { ExperienceEntry } from "@/types/cv";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2 } from "lucide-react";
 import { generateId } from "@/types";
+import { Checkbox } from "@/components/ui/checkbox";
+
+const ReactQuill = dynamic(
+  () => import("react-quill").then((mod) => mod.default),
+  { ssr: false, loading: () => <div className="h-40 border rounded-md animate-pulse bg-muted" /> }
+);
 
 interface ExperienceFormProps {
   entries: ExperienceEntry[];
@@ -27,7 +33,7 @@ export function ExperienceForm({ entries, onChange }: ExperienceFormProps) {
     onChange([...entries, newEntry]);
   };
 
-  const updateEntry = (id: string, field: keyof ExperienceEntry, value: string) => {
+  const updateEntry = (id: string, field: keyof ExperienceEntry, value: string | boolean) => {
     onChange(
       entries.map((entry) =>
         entry.id === id ? { ...entry, [field]: value } : entry
@@ -90,22 +96,45 @@ export function ExperienceForm({ entries, onChange }: ExperienceFormProps) {
             </div>
             <div className="space-y-2">
               <Label>Ngày kết thúc</Label>
-              <Input
-                type="month"
-                value={entry.endDate}
-                onChange={(e) => updateEntry(entry.id, "endDate", e.target.value)}
-                placeholder="Đang làm nếu chưa kết thúc"
-              />
+              <div className="flex items-center gap-2">
+                <Input
+                  type="month"
+                  value={entry.endDate}
+                  onChange={(e) => updateEntry(entry.id, "endDate", e.target.value)}
+                  disabled={entry.endDate === "present"}
+                  className={entry.endDate === "present" ? "opacity-50" : ""}
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id={`present-${entry.id}`}
+                  checked={entry.endDate === "present"}
+                  onCheckedChange={(checked) => {
+                    updateEntry(entry.id, "endDate", checked ? "present" : "");
+                  }}
+                />
+                <Label htmlFor={`present-${entry.id}`} className="text-sm font-normal cursor-pointer">
+                  Đang làm việc hiện tại
+                </Label>
+              </div>
             </div>
           </div>
 
           <div className="space-y-2">
             <Label>Mô tả công việc</Label>
-            <Textarea
+            <ReactQuill
               value={entry.description}
-              onChange={(e) => updateEntry(entry.id, "description", e.target.value)}
-              placeholder="- Phát triển tính năng mới&#10;- Tham gia code review&#10;- Làm việc với team 5 người"
-              className="min-h-[120px]"
+              onChange={(content) => updateEntry(entry.id, "description", content)}
+              theme="snow"
+              modules={{
+                toolbar: [
+                  [{ 'header': [1, 2, false] }],
+                  ['bold', 'italic', 'underline', 'strike'],
+                  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                  ['clean']
+                ],
+              }}
+              className="bg-white"
             />
           </div>
         </div>

@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   PersonalInfoForm,
   AboutMeForm,
@@ -20,8 +19,19 @@ import {
   ProjectsForm,
   CertificatesForm,
 } from "@/components/cv-editor";
-import { Save, Eye, ArrowLeft, FileText, User, GraduationCap, Briefcase, Lightbulb, Globe, FolderGit2, Award } from "lucide-react";
+import { Save, Eye, ArrowLeft, ArrowRight, Check, Upload, Sparkles } from "lucide-react";
 import Link from "next/link";
+
+const STEPS = [
+  { id: "personal", title: "Cá nhân", icon: "👤" },
+  { id: "about", title: "Giới thiệu", icon: "📝" },
+  { id: "education", title: "Học vấn", icon: "🎓" },
+  { id: "experience", title: "Kinh nghiệm", icon: "💼" },
+  { id: "skills", title: "Kỹ năng", icon: "🛠️" },
+  { id: "languages", title: "Ngôn ngữ", icon: "🌐" },
+  { id: "projects", title: "Dự án", icon: "📁" },
+  { id: "certificates", title: "Chứng chỉ", icon: "🏆" },
+];
 
 export default function NewCVPage() {
   const { user } = useAuth();
@@ -30,6 +40,7 @@ export default function NewCVPage() {
   const [cvData, setCVData] = React.useState<CVData>(createEmptyCV());
   const [cvName, setCVName] = React.useState("CV của tôi");
   const [saving, setSaving] = React.useState(false);
+  const [currentStep, setCurrentStep] = React.useState(0);
   const [lastSaved, setLastSaved] = React.useState<Date | null>(null);
 
   const handleSave = async () => {
@@ -54,6 +65,142 @@ export default function NewCVPage() {
     }
   };
 
+  const nextStep = () => {
+    if (currentStep < STEPS.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const goToStep = (index: number) => {
+    setCurrentStep(index);
+  };
+
+  const renderStepContent = () => {
+    const step = STEPS[currentStep];
+    switch (step.id) {
+      case "personal":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Thông tin cá nhân</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <PersonalInfoForm
+                data={cvData.personal}
+                onChange={(personal) => setCVData({ ...cvData, personal })}
+              />
+            </CardContent>
+          </Card>
+        );
+      case "about":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Giới thiệu bản thân</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AboutMeForm
+                value={cvData.about}
+                onChange={(about) => setCVData({ ...cvData, about })}
+              />
+            </CardContent>
+          </Card>
+        );
+      case "education":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Học vấn</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <EducationForm
+                entries={cvData.education}
+                onChange={(education) => setCVData({ ...cvData, education })}
+              />
+            </CardContent>
+          </Card>
+        );
+      case "experience":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Kinh nghiệm làm việc</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ExperienceForm
+                entries={cvData.experience}
+                onChange={(experience) => setCVData({ ...cvData, experience })}
+              />
+            </CardContent>
+          </Card>
+        );
+      case "skills":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Kỹ năng</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SkillsForm
+                entries={cvData.skills}
+                onChange={(skills) => setCVData({ ...cvData, skills })}
+              />
+            </CardContent>
+          </Card>
+        );
+      case "languages":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Ngôn ngữ</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <LanguagesForm
+                entries={cvData.languages}
+                onChange={(languages) => setCVData({ ...cvData, languages })}
+              />
+            </CardContent>
+          </Card>
+        );
+      case "projects":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Dự án nổi bật</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ProjectsForm
+                entries={cvData.projects}
+                onChange={(projects) => setCVData({ ...cvData, projects })}
+              />
+            </CardContent>
+          </Card>
+        );
+      case "certificates":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle>Chứng chỉ</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CertificatesForm
+                entries={cvData.certificates}
+                onChange={(certificates) => setCVData({ ...cvData, certificates })}
+              />
+            </CardContent>
+          </Card>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="mb-6">
@@ -74,10 +221,10 @@ export default function NewCVPage() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Link href="/preview/temp">
+            <Link href="/cv/ai-analyze">
               <Button variant="outline">
-                <Eye className="w-4 h-4 mr-2" />
-                Xem trước
+                <Sparkles className="w-4 h-4 mr-2" />
+                Phân tích CV
               </Button>
             </Link>
             <Button onClick={handleSave} disabled={saving}>
@@ -93,154 +240,64 @@ export default function NewCVPage() {
         )}
       </div>
 
-      <Tabs defaultValue="personal" className="space-y-6">
-        <TabsList className="grid grid-cols-4 lg:grid-cols-8 w-full overflow-auto">
-          <TabsTrigger value="personal" className="flex items-center gap-2">
-            <User className="w-4 h-4" />
-            <span className="hidden sm:inline">Cá nhân</span>
-          </TabsTrigger>
-          <TabsTrigger value="about" className="flex items-center gap-2">
-            <FileText className="w-4 h-4" />
-            <span className="hidden sm:inline">Giới thiệu</span>
-          </TabsTrigger>
-          <TabsTrigger value="education" className="flex items-center gap-2">
-            <GraduationCap className="w-4 h-4" />
-            <span className="hidden sm:inline">Học vấn</span>
-          </TabsTrigger>
-          <TabsTrigger value="experience" className="flex items-center gap-2">
-            <Briefcase className="w-4 h-4" />
-            <span className="hidden sm:inline">Kinh nghiệm</span>
-          </TabsTrigger>
-          <TabsTrigger value="skills" className="flex items-center gap-2">
-            <Lightbulb className="w-4 h-4" />
-            <span className="hidden sm:inline">Kỹ năng</span>
-          </TabsTrigger>
-          <TabsTrigger value="languages" className="flex items-center gap-2">
-            <Globe className="w-4 h-4" />
-            <span className="hidden sm:inline">Ngôn ngữ</span>
-          </TabsTrigger>
-          <TabsTrigger value="projects" className="flex items-center gap-2">
-            <FolderGit2 className="w-4 h-4" />
-            <span className="hidden sm:inline">Dự án</span>
-          </TabsTrigger>
-          <TabsTrigger value="certificates" className="flex items-center gap-2">
-            <Award className="w-4 h-4" />
-            <span className="hidden sm:inline">Chứng chỉ</span>
-          </TabsTrigger>
-        </TabsList>
+      <div className="mb-8">
+        <div className="flex items-center justify-between overflow-x-auto pb-4 gap-2">
+          {STEPS.map((step, index) => (
+            <button
+              key={step.id}
+              onClick={() => goToStep(index)}
+              className={`flex flex-col items-center min-w-[80px] p-2 rounded-lg transition-all ${
+                currentStep === index
+                  ? "bg-primary text-primary-foreground"
+                  : index < currentStep
+                  ? "bg-green-100 text-green-700 hover:bg-green-200"
+                  : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+              }`}
+            >
+              <span className="text-2xl">{step.icon}</span>
+              <span className="text-xs mt-1 font-medium">{step.title}</span>
+              {index < currentStep && (
+                <Check className="w-3 h-3 mt-1 text-green-600" />
+              )}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center justify-between mt-2">
+          <span className="text-sm text-muted-foreground">
+            Bước {currentStep + 1} / {STEPS.length}
+          </span>
+          <span className="text-sm font-medium">
+            {STEPS[currentStep].icon} {STEPS[currentStep].title}
+          </span>
+        </div>
+      </div>
 
-        <TabsContent value="personal">
-          <Card>
-            <CardHeader>
-              <CardTitle>Thông tin cá nhân</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PersonalInfoForm
-                data={cvData.personal}
-                onChange={(personal) => setCVData({ ...cvData, personal })}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
+      <div className="min-h-[400px]">
+        {renderStepContent()}
+      </div>
 
-        <TabsContent value="about">
-          <Card>
-            <CardHeader>
-              <CardTitle>Giới thiệu bản thân</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AboutMeForm
-                value={cvData.about}
-                onChange={(about) => setCVData({ ...cvData, about })}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
+      <div className="flex justify-between items-center mt-6 pt-6 border-t">
+        <Button
+          variant="outline"
+          onClick={prevStep}
+          disabled={currentStep === 0}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Quay lại
+        </Button>
 
-        <TabsContent value="education">
-          <Card>
-            <CardHeader>
-              <CardTitle>Học vấn</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <EducationForm
-                entries={cvData.education}
-                onChange={(education) => setCVData({ ...cvData, education })}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="experience">
-          <Card>
-            <CardHeader>
-              <CardTitle>Kinh nghiệm làm việc</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ExperienceForm
-                entries={cvData.experience}
-                onChange={(experience) => setCVData({ ...cvData, experience })}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="skills">
-          <Card>
-            <CardHeader>
-              <CardTitle>Kỹ năng</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <SkillsForm
-                entries={cvData.skills}
-                onChange={(skills) => setCVData({ ...cvData, skills })}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="languages">
-          <Card>
-            <CardHeader>
-              <CardTitle>Ngôn ngữ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <LanguagesForm
-                entries={cvData.languages}
-                onChange={(languages) => setCVData({ ...cvData, languages })}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="projects">
-          <Card>
-            <CardHeader>
-              <CardTitle>Dự án nổi bật</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ProjectsForm
-                entries={cvData.projects}
-                onChange={(projects) => setCVData({ ...cvData, projects })}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="certificates">
-          <Card>
-            <CardHeader>
-              <CardTitle>Chứng chỉ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CertificatesForm
-                entries={cvData.certificates}
-                onChange={(certificates) => setCVData({ ...cvData, certificates })}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        {currentStep < STEPS.length - 1 ? (
+          <Button onClick={nextStep}>
+            Tiếp theo
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        ) : (
+          <Button onClick={handleSave} disabled={saving}>
+            <Check className="w-4 h-4 mr-2" />
+            {saving ? 'Đang lưu...' : 'Hoàn thành'}
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

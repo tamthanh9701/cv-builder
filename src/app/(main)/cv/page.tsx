@@ -6,7 +6,7 @@ import { useAuth } from "@/components/auth-provider";
 import { createClient } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, FileText, MoreVertical, Pencil, Trash2, Eye, Copy } from "lucide-react";
+import { Plus, FileText, MoreVertical, Pencil, Trash2, Eye, Copy, Upload } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -102,6 +102,12 @@ export default function CVListPage() {
             {cvs.length} CV đã tạo
           </p>
         </div>
+        <Link href="/cv/upload-template">
+          <Button variant="outline">
+            <Upload className="w-4 h-4 mr-2" />
+            Tải mẫu CV
+          </Button>
+        </Link>
         <Link href="/cv/new">
           <Button>
             <Plus className="w-4 h-4 mr-2" />
