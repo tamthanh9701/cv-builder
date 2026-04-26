@@ -19,7 +19,7 @@ import {
   ProjectsForm,
   CertificatesForm,
 } from "@/components/cv-editor";
-import { Save, Eye, ArrowLeft, ArrowRight, Check, Upload, Sparkles } from "lucide-react";
+import { Save, Eye, ArrowLeft, ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 
 const STEPS = [
@@ -221,12 +221,6 @@ export default function NewCVPage() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Link href="/cv/ai-analyze">
-              <Button variant="outline">
-                <Sparkles className="w-4 h-4 mr-2" />
-                Phân tích CV
-              </Button>
-            </Link>
             <Button onClick={handleSave} disabled={saving}>
               <Save className="w-4 h-4 mr-2" />
               {saving ? 'Đang lưu...' : 'Lưu CV'}

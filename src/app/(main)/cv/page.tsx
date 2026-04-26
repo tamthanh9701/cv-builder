@@ -102,18 +102,20 @@ export default function CVListPage() {
             {cvs.length} CV đã tạo
           </p>
         </div>
-        <Link href="/cv/upload-template">
-          <Button variant="outline">
-            <Upload className="w-4 h-4 mr-2" />
-            Tải mẫu CV
-          </Button>
-        </Link>
-        <Link href="/cv/new">
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Tạo CV mới
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/cv/upload-template">
+            <Button variant="outline">
+              <Upload className="w-4 h-4 mr-2" />
+              Tải mẫu CV
+            </Button>
+          </Link>
+          <Link href="/cv/new">
+            <Button>
+              <Plus className="w-4 h-4 mr-2" />
+              Tạo CV mới
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {cvs.length === 0 ? (
